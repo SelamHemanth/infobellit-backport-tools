@@ -1,0 +1,38 @@
+#!/bin/bash
+#===================================================
+# Installer Script for backport_contribution Tool
+# Author: Hemanth Selam
+# Email: hemanth.selam@gmail.com
+# Version: 1.0.1
+# License: MIT
+#==================================================
+
+# Check for required packages and install them
+if [ -f /etc/debian_version ]; then
+    sudo apt update
+    sudo apt install -y python3 python3-pip
+elif [ -f /etc/redhat-release ] || [ -f /etc/anolis-release ] ||
+        [ -f /etc/openEuler-release ] || [ -f /etc/centos-release ] ||
+        [ -f /etc/rocky-release ]; then
+    sudo yum install -y python3 python3-pip
+else
+    echo "Unsupported distribution"
+    exit 1
+fi
+
+# Install the pandas, matplotlib and openpyxl
+pip install pandas matplotlib openpyxl
+
+# Install the termcolor and pyinstaller packages
+pip3 install --user termcolor pyinstaller
+
+# Create a binary for the Python script
+~/.local/bin/pyinstaller --onefile backport_contribution.py
+
+# Move the binary to /usr/bin/
+sudo mv dist/backport_contribution /usr/bin/backport_contribution
+
+# Clean up
+rm -rf build dist backport_contribution.spec
+
+echo "Installation complete. You can now use 'backport_contribution' command."
