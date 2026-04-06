@@ -82,7 +82,7 @@ process_commits() {
 
         short_id=$(echo "$full_commit_id" | cut -c 1-12)
         commit_message=$(git log -n 1 --pretty=format:%s "$full_commit_id")
-        version=$(git tag --contains "$full_commit_id" --sort=taggerdate | head -n 1)
+        version=$(git describe --contains "$full_commit_id" | sed 's/~.*//')
 
         echo "<tr><td><a href=\"$base_url$full_commit_id\">$short_id</a></td><td>$commit_message</td><td>$sort_number</td><td>${version:-None}</td></tr>" >> "$output_file"
         ((sort_number++))
